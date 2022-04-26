@@ -61,7 +61,7 @@ spec:
             sh "wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz"
             sh "tar xvf yq_linux_amd64.tar.gz"
             sh "mv yq_linux_amd64 /usr/bin/yq"
-            sh "git checkout -b main"
+            sh "git checkout -b ${env.GIT_REPO_BRANCH}"
           dir("simple-rsvp-helm-deploy") {
             sh "git checkout ${env.GIT_REPO_BRANCH}"
             //install done
