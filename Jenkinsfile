@@ -55,13 +55,13 @@ spec:
       }
       steps {
         container('tools') {
-            sh '''#!/bin/bash
-              git clone https://${env.HELM_GIT_REPO_URL}
-              git config --global user.email ${env.GIT_REPO_EMAIL}
-              wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz
-              tar xvf yq_linux_amd64.tar.gz && mv yq_linux_amd64 /usr/bin/yq
-              git checkout -b main
-            '''
+            sh "git clone https://${env.HELM_GIT_REPO_URL}"
+            sh "git config --global user.email ${env.GIT_REPO_EMAIL}"
+             // install wq
+            sh "wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz"
+            sh "tar xvf yq_linux_amd64.tar.gz"
+            sh "mv yq_linux_amd64 /usr/bin/yq"
+            sh "git checkout -b main"
           dir("simple-rsvp-helm-deploy") {
             sh "git checkout ${env.GIT_REPO_BRANCH}"
             //install done
