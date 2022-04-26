@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 
 LINK=os.environ.get('LINK', "www.nutanix.com")
-TEXT1=os.environ.get('TEXT1', "Nutanix Calm")
+TEXT1=os.environ.get('TEXT1', "Calm")
 TEXT2=os.environ.get('TEXT2', "Reservations")
 LOGO=os.environ.get('LOGO', "https://raw.githubusercontent.com/jesse-gonzalez/simple-rsvp-app/master/static/nutanix.png")
 COMPANY=os.environ.get('COMPANY', "Nutanix Inc.")
