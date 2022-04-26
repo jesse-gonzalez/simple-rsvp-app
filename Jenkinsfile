@@ -33,7 +33,6 @@ spec:
     }
   environment {
       IMAGE_REPO = "ntnxdemo/rsvp"
-      // Instead of DOCKERHUB_USER, use your Dockerhub name
   }
   stages {
     stage('Kaniko Image Build') {
@@ -47,21 +46,15 @@ spec:
     stage('Deploy to Develop') {
       environment {
         GIT_CREDS = credentials('github-creds')
-        HELM_GIT_REPO_URL = "github.com/jesse-gonzalez/simple-rsvp-helm-deploy.git"
         GIT_REPO_EMAIL = 'jesse.gonzalez@nutanix.com'
-          
-       // Update above variables with your user details
       }
       steps {
         container('tools') {
             sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/$GIT_CREDS_USR/simple-rsvp-helm-deploy.git"
             sh "git config --global user.email ${env.GIT_REPO_EMAIL}"
-             // install wq
             sh "wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz"
-            sh "tar xvf yq_linux_amd64.tar.gz"
-            sh "mv yq_linux_amd64 /usr/bin/yq"
+            sh "tar xvf yq_linux_amd64.tar.gz && mv yq_linux_amd64 /usr/bin/yq"
           dir("simple-rsvp-helm-deploy") {
-            //install done
             sh '''#!/bin/bash
               ls -alth && pwd
               cd configs/kalm-develop && yq eval '.image.tag = env(GIT_COMMIT)' -i values.yaml
@@ -70,6 +63,21 @@ spec:
           }
         }
       }
+    }
+    stage('Deploy to Prod') {
+      steps {
+        input message:'Approve deployment?'
+        container('tools') {
+          dir("simple-rsvp-helm-deploy") {
+            //install done
+            sh '''#!/bin/bash
+              cd configs/kalm-main && yq eval '.image.tag = env(GIT_COMMIT)' -i values.yaml
+              git commit -am 'Publish new version' && git push || echo 'no changes'
+            '''
+          }
+        }
+      }
     }   
+  
   }
 }
