@@ -49,7 +49,7 @@ spec:
         GIT_CREDS = credentials('github-creds')
         HELM_GIT_REPO_URL = "github.com/jesse-gonzalez/simple-rsvp-helm-deploy.git"
         GIT_REPO_EMAIL = 'jesse.gonzalez@nutanix.com'
-        GIT_REPO_BRANCH = "develop"
+        GIT_REPO_BRANCH = "main"
           
        // Update above variables with your user details
       }
