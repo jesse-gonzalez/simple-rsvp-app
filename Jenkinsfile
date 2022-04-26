@@ -36,7 +36,7 @@ spec:
       // Instead of DOCKERHUB_USER, use your Dockerhub name
   }
   stages {
-    stage('Build') {
+    stage('Kaniko Image Build') {
       steps {
         container('kaniko') {
           sh "echo ${env.GIT_COMMIT}"
@@ -63,7 +63,7 @@ spec:
             sh "mv yq_linux_amd64 /usr/bin/yq"
             sh "git checkout -b main"
           dir("simple-rsvp-helm-deploy") {
-              sh "git checkout ${env.GIT_REPO_BRANCH}"
+            sh "git checkout ${env.GIT_REPO_BRANCH}"
             //install done
             sh '''#!/bin/bash
               echo $GIT_REPO_EMAIL
