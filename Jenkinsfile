@@ -44,37 +44,31 @@ spec:
         }
       }
     }
-    stage('Deploy') {
+    stage('Deploy to Develop') {
       environment {
         GIT_CREDS = credentials('github-creds')
         HELM_GIT_REPO_URL = "github.com/jesse-gonzalez/simple-rsvp-helm-deploy.git"
-        GIT_REPO_EMAIL = 'github@no-reply.com'
+        GIT_REPO_EMAIL = 'jesse.gonzalez@nutanix.com'
         GIT_REPO_BRANCH = "main"
           
        // Update above variables with your user details
       }
       steps {
         container('tools') {
-            sh "git clone https://${env.HELM_GIT_REPO_URL}"
-            sh "git config --global user.email ${env.GIT_REPO_EMAIL}"
-             // install wq
-            sh "wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz"
-            sh "tar xvf yq_linux_amd64.tar.gz"
-            sh "mv yq_linux_amd64 /usr/bin/yq"
-            sh "git checkout -b main"
+            sh '''#!/bin/bash
+              git clone https://${env.HELM_GIT_REPO_URL}
+              git config --global user.email ${env.GIT_REPO_EMAIL}
+              wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz
+              tar xvf yq_linux_amd64.tar.gz && mv yq_linux_amd64 /usr/bin/yq
+              git checkout -b main
+            '''
           dir("simple-rsvp-helm-deploy") {
             sh "git checkout ${env.GIT_REPO_BRANCH}"
             //install done
             sh '''#!/bin/bash
-              echo $GIT_REPO_EMAIL
-              echo $GIT_COMMIT
-              ls -alth
-              yq eval '.image.repository = env(IMAGE_REPO)' -i values.yaml
-              yq eval '.image.tag = env(GIT_COMMIT)' -i values.yaml
-              cat values.yaml
-              pwd
-              git add values.yaml
-              git commit -m 'Triggered Build'
+              ls -alth && pwd
+              cd configs/kalm-develop && yq eval '.image.tag = env(GIT_COMMIT)' -i values.yaml
+              git commit -am 'Publish new version' && git push || echo 'no changes'
               git push https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/$GIT_CREDS_USR/simple-rsvp-helm-deploy.git
             '''
           }
