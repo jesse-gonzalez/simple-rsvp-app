@@ -46,10 +46,10 @@ spec:
     }
     stage('Deploy') {
       environment {
-        GIT_CREDS = credentials('	github-creds')
+        GIT_CREDS = credentials('github-creds')
         HELM_GIT_REPO_URL = "github.com/jesse-gonzalez/simple-rsvp-helm-deploy.git"
         GIT_REPO_EMAIL = 'github@no-reply.com'
-        GIT_REPO_BRANCH = "master"
+        GIT_REPO_BRANCH = "main"
           
        // Update above variables with your user details
       }
@@ -61,7 +61,7 @@ spec:
             sh "wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64.tar.gz"
             sh "tar xvf yq_linux_amd64.tar.gz"
             sh "mv yq_linux_amd64 /usr/bin/yq"
-            sh "git checkout -b master"
+            sh "git checkout -b main"
           dir("simple-rsvp-helm-deploy") {
               sh "git checkout ${env.GIT_REPO_BRANCH}"
             //install done
